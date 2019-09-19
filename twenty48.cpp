@@ -1,11 +1,12 @@
 //Create the 2048 game with i/o and arrays.
 //Josh Guempel
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
 const int GRID_SIZE = 4;
-const int MAX_INDEX = GRID_SIZE - 1;
 const int MAX_MOVES = GRID_SIZE - 1;
 
 //Prints 4x4 array of ints
@@ -26,32 +27,49 @@ void shift_up(int a[GRID_SIZE][GRID_SIZE], int i);
 void shift_right(int a[GRID_SIZE][GRID_SIZE], int i);
 void shift_down(int a[GRID_SIZE][GRID_SIZE], int i);
 
+void random_spawn(int a[GRID_SIZE][GRID_SIZE]);
+
+bool grid_filled(int a[GRID_SIZE][GRID_SIZE]);
+
+
 int main() {
-    enum direction {left = 0, up, right, down};
-    int move;
+    srand(time(NULL));
+    string move;
     int grid[GRID_SIZE][GRID_SIZE];
-    
-    //Initialize the grid, then print it.
-    init_g(grid);
-    
-    cin>>move;
-    switch(move) {
-        case left:
+    bool lost = false;
+
+    //Initialize the grid
+    for(int row = 0; row < GRID_SIZE; row++) {
+        for(int column = 0; column < GRID_SIZE; column++) {
+            grid[row][column] = 0;
+        }
+    }
+    random_spawn(grid);
+    print_g(grid);
+
+    while(!lost) {
+        cin >> move;
+        for(int i = 0; i < 10; i++)
+            cout << "\n\n\n\n";
+        if(move == "a") {
             move_left(grid);
             print_g(grid);
-        break;
-        case up:
+        } else if(move == "w") {
             move_up(grid);
             print_g(grid);
-        break;
-        case right:
+        } else if(move == "d") {
             move_right(grid);
             print_g(grid);
-        break;
-        case down:
+        } else if(move == "s") {
             move_down(grid);
             print_g(grid);
-        break;
+        }
+        if(grid_filled(grid)) {
+            lost = true;
+            cout << "YOU LOSE, HA" << endl;
+        }
+        random_spawn(grid);
+        
     }
     return 0;
 }
@@ -77,7 +95,7 @@ void move_left(int a[GRID_SIZE][GRID_SIZE]) {
     for(int i = 0; i < GRID_SIZE; i++) {
         //Shift left
         shift_left(a, i);
-        
+
         //Merge, walking left to right
         for(int j = 0; j < GRID_SIZE - 1; j++) {
             if(a[i][j]==a[i][j+1]) {
@@ -191,4 +209,26 @@ void shift_down(int a[GRID_SIZE][GRID_SIZE], int i) {
             }
         }
     }
+}
+
+
+void random_spawn(int a[GRID_SIZE][GRID_SIZE]) {
+    for(int row = 0; row < GRID_SIZE; row++) {
+        for(int column = 0; column < GRID_SIZE; column++) {
+            if(a[row][column] == 0 && !(rand()%8)) {
+                a[row][column] = 2;
+            }
+        }
+    }
+}
+
+bool grid_filled(int a[GRID_SIZE][GRID_SIZE]) {
+    for(int row = 0; row < GRID_SIZE; row++) {
+        for(int column = 0; column < GRID_SIZE; column++) {
+            if(a[row][column] == 0) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
