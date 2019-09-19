@@ -31,12 +31,16 @@ void random_spawn(int a[GRID_SIZE][GRID_SIZE]);
 
 bool grid_filled(int a[GRID_SIZE][GRID_SIZE]);
 
-
 int main() {
     srand(time(NULL));
     string move;
     int grid[GRID_SIZE][GRID_SIZE];
     bool lost = false;
+
+    cout << "~~~~~~~~~~~~~~~~~Welcome to 2048~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+    cout << "~~~~~ w = up, s = down, a = left, d = right ~~~~~~~" << endl;
+    cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 
     //Initialize the grid
     for(int row = 0; row < GRID_SIZE; row++) {
@@ -44,8 +48,11 @@ int main() {
             grid[row][column] = 0;
         }
     }
+
     random_spawn(grid);
     print_g(grid);
+
+    bool invalid_move = false;
 
     while(!lost) {
         cin >> move;
@@ -63,13 +70,18 @@ int main() {
         } else if(move == "s") {
             move_down(grid);
             print_g(grid);
+        } else {
+            cout << "Didnt do anything because no valid move was entered." << endl;
+            print_g(grid);
+            invalid_move = true;
         }
         if(grid_filled(grid)) {
             lost = true;
             cout << "YOU LOSE, HA" << endl;
         }
-        random_spawn(grid);
-        
+        if(!invalid_move)
+            random_spawn(grid);
+        invalid_move = false;
     }
     return 0;
 }
@@ -232,3 +244,4 @@ bool grid_filled(int a[GRID_SIZE][GRID_SIZE]) {
     }
     return true;
 }
+
