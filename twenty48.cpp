@@ -20,6 +20,12 @@ void move_up(int a[GRID_SIZE][GRID_SIZE]);
 void move_right(int a[GRID_SIZE][GRID_SIZE]);
 void move_down(int a[GRID_SIZE][GRID_SIZE]);
 
+//Subroutine of left, up, right, down (shift)
+void shift_left(int a[GRID_SIZE][GRID_SIZE], int i);
+void shift_up(int a[GRID_SIZE][GRID_SIZE], int i);
+void shift_right(int a[GRID_SIZE][GRID_SIZE], int i);
+void shift_down(int a[GRID_SIZE][GRID_SIZE], int i);
+
 int main() {
     enum direction {left = 0, up, right, down};
     int move;
@@ -70,14 +76,8 @@ void init_g(int a[GRID_SIZE][GRID_SIZE]) {
 void move_left(int a[GRID_SIZE][GRID_SIZE]) {
     for(int i = 0; i < GRID_SIZE; i++) {
         //Shift left
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[i][l]==0) {
-                    a[i][l] += a[i][l+1];
-                    a[i][l+1] = 0;
-                }
-            }
-        }
+        shift_left(a, i);
+        
         //Merge, walking left to right
         for(int j = 0; j < GRID_SIZE - 1; j++) {
             if(a[i][j]==a[i][j+1]) {
@@ -85,29 +85,17 @@ void move_left(int a[GRID_SIZE][GRID_SIZE]) {
                 a[i][j+1] = 0;
             }
         }
+
         //shift left again
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[i][l]==0) {
-                    a[i][l] += a[i][l+1];
-                    a[i][l+1] = 0;
-                }
-            }
-        }
+        shift_left(a, i);
     }
 }
 
 void move_up(int a[GRID_SIZE][GRID_SIZE]) {
     for(int i = 0; i < GRID_SIZE; i++) {
         //Shift up
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[l][i]==0) {
-                    a[l][i] += a[l+1][i];
-                    a[l+1][i] = 0;
-                }
-            }
-        }
+        shift_up(a, i);
+
         //Merge, walking top to bottom
         for(int j = 0; j < GRID_SIZE - 1; j++) {
             if(a[j][i]==a[j+1][i]) {
@@ -115,29 +103,17 @@ void move_up(int a[GRID_SIZE][GRID_SIZE]) {
                 a[j+1][i] = 0;
             }
         }
+
         //shift up again
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[l][i]==0) {
-                    a[l][i] += a[l+1][i];
-                    a[l+1][i] = 0;
-                }
-            }
-        }
+        shift_up(a, i);
     }
 }
 
 void move_right(int a[GRID_SIZE][GRID_SIZE]) {
     for(int i = 0; i < GRID_SIZE; i++) {
         //Shift right
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[i][l+1]==0) {
-                    a[i][l+1] += a[i][l];
-                    a[i][l] = 0;
-                }
-            }
-        }
+        shift_right(a, i);
+
         //Merge, walking right to left
         for(int j = GRID_SIZE - 1; j >= 1; j--) {
             if(a[i][j]==a[i][j-1]) {
@@ -145,29 +121,17 @@ void move_right(int a[GRID_SIZE][GRID_SIZE]) {
                 a[i][j-1] = 0;
             }
         }
+
         //Shift right again
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[i][l+1]==0) {
-                    a[i][l+1] += a[i][l];
-                    a[i][l] = 0;
-                }
-            }
-        }
+        shift_right(a, i);
     }
 }
 
 void move_down(int a[GRID_SIZE][GRID_SIZE]) {
     for(int i = 0; i < GRID_SIZE; i++) {
         //Shift down
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[l+1][i]==0) {
-                    a[l+1][i] += a[l][i];
-                    a[l][i] = 0;
-                }
-            }
-        }
+        shift_down(a, i);
+
         //Merge, walking bottom to top
         for(int j = GRID_SIZE - 1; j >= 1; j--) {
             if(a[j][i]==a[j-1][i]) {
@@ -175,15 +139,56 @@ void move_down(int a[GRID_SIZE][GRID_SIZE]) {
                 a[j-1][i] = 0;
             }
         }
+
         //Shift down again
-        for(int m = 0; m < MAX_MOVES; m++) {
-            for(int l = 0; l < GRID_SIZE-1; l++) {
-                if(a[l+1][i]==0) {
-                    a[l+1][i] += a[l][i];
-                    a[l][i] = 0;
-                }
+        shift_down(a, i);
+    }
+}
+
+//Shift array left
+void shift_left(int a[GRID_SIZE][GRID_SIZE], int i) {
+    for(int m = 0; m < MAX_MOVES; m++) {
+        for(int l = 0; l < GRID_SIZE-1; l++) {
+            if(a[i][l]==0) {
+                a[i][l] += a[i][l+1];
+                a[i][l+1] = 0;
             }
         }
     }
 }
 
+//shift array up
+void shift_up(int a[GRID_SIZE][GRID_SIZE], int i) {
+    for(int m = 0; m < MAX_MOVES; m++) {
+        for(int l = 0; l < GRID_SIZE-1; l++) {
+            if(a[l][i]==0) {
+                a[l][i] += a[l+1][i];
+                a[l+1][i] = 0;
+            }
+        }
+    }
+}
+
+//Shift array right
+void shift_right(int a[GRID_SIZE][GRID_SIZE], int i) {
+    for(int m = 0; m < MAX_MOVES; m++) {
+        for(int l = 0; l < GRID_SIZE-1; l++) {
+            if(a[i][l+1]==0) {
+                a[i][l+1] += a[i][l];
+                a[i][l] = 0;
+            }
+        }
+    }
+}
+
+//Shift array down
+void shift_down(int a[GRID_SIZE][GRID_SIZE], int i) {
+    for(int m = 0; m < MAX_MOVES; m++) {
+        for(int l = 0; l < GRID_SIZE-1; l++) {
+            if(a[l+1][i]==0) {
+                a[l+1][i] += a[l][i];
+                a[l][i] = 0;
+            }
+        }
+    }
+}
